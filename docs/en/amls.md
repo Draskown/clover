@@ -6,7 +6,7 @@
 
 ### AMLS Article
 
-In this Article we will describe AMLS project. Namely, AMLS Optical stabilization, GPS holding, GPS following, Altitude holding, Grapling, Weather protection, Speed measurement and Illumination systems. In addition, we will make clear of how it works and how it was done!
+In this Article we will describe AMLS project. Namely, AMLS Optical stabilization, GPS holding, GPS following, Altitude holding, Grappling, Weather protection, Speed measurement and Illumination systems. In addition, we will make clear of how it works and how it was done!
 
 ### Our main GitHub repository
 
@@ -14,9 +14,9 @@ https://github.com/XxOinvizioNxX/Liberty-Way
 
 ### Developers
 
-- Pavel Neshumov: xxoinvizionxx@gmail.com
-- Andrey Kabalin: astik452@gmail.com
-- Vladislav Yasnetsky: vlad.yasn@gmail.com
+- [Pavel Neshumov](mailto:xxoinvizionxx@gmail.com)
+- [Andrey Kabalin](mailto:astik452@gmail.com)
+- [Vladislav Yasnetsky](mailto:vlad.yasn@gmail.com)
 
 ![Drone 1](../assets/amls/drone_meme.jpg "Drone 1")
 
@@ -80,15 +80,16 @@ How the system operates:
 
 ### Short video about our project (clickable)
 
-[![Watch the video](../assets/amls/youtube_amls_results.jpg)](https://www.youtube.com/watch?v=6qjS-iq6a3k)
+<iframe width="560" height="315" src="https://www.youtube.com/watch?v=6qjS-iq6a3k" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
 
 ## 1. GPS hold and Flight to waypoints functions
 
-As stated earlier, the drone is equipped with "universal" module Liberty-Link, which is receiving commands from the platform and adjusting the drone's position by intervering into the remote control signal (More in the following paragraphs).
+As stated earlier, the drone is equipped with "universal" module Liberty-Link, which is receiving commands from the platform and adjusting the drone's position by interfering into the remote control signal (More in the following paragraphs).
 
 GPS module will be built in Liberty-Link, so it would have the ability to maintain the drone's GPS position and follow GPS points.
 
-The result of the GPS hold algorithm (clickable):[![Watch the video](../assets/amls/youtube_gps_hold.jpg)](https://www.youtube.com/watch?v=x364giIt6lc&ab_channel=AMLSMosPolytech)
+The result of the GPS hold algorithm (clickable):
+<iframe width="560" height="315" src="https://www.youtube.com/watch?v=x364giIt6lc&ab_channel=AMLSMosPolytech" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
 
 GPS-module will be used from the UBlox group (for instance, UBlox Neo-M8). There will be 1 or 3 (to minimize the error) modules.
 
@@ -106,9 +107,9 @@ while (GPS_serial.available() && new_line_found == 0) {
 	// Stay in this loop as long as there is serial information from the GPS available
 	char read_serial_byte = GPS_serial.read();
 	if (read_serial_byte == '$') {
-		// Clear the old data from the incomming buffer array if the new byte equals a $ character
+		// Clear the old data from the incoming buffer array if the new byte equals a $ character
 		for (message_counter = 0; message_counter <= 99; message_counter++) {
-			incomming_message[message_counter] = '-';
+			incoming_message[message_counter] = '-';
 		}
 		// Reset the message_counter variable because we want to start writing at the begin of the array
 		message_counter = 0;
@@ -117,8 +118,8 @@ while (GPS_serial.available() && new_line_found == 0) {
 	else if (message_counter <= 99)
 		message_counter++;
 	
-	// Write the new received byte to the new position in the incomming_message array
-	incomming_message[message_counter] = read_serial_byte;
+	// Write the new received byte to the new position in the incoming_message array
+	incoming_message[message_counter] = read_serial_byte;
 
 	// Every NMEA line ends with a '*'. If this character is detected the new_line_found variable is set to 1
 	if (read_serial_byte == '*') new_line_found = 1;
@@ -135,7 +136,7 @@ Parsing GPS data of the UBlox protocol looks like this:
 if (new_line_found == 1) {
 	// Reset the new_line_found variable for the next line
 	new_line_found = 0;
-	if (incomming_message[4] == 'L' && incomming_message[5] == 'L' && incomming_message[7] == ',') {
+	if (incoming_message[4] == 'L' && incoming_message[5] == 'L' && incoming_message[7] == ',') {
 		// When there is no GPS fix or latitude/longitude information available
 		// Set some variables to 0 if no valid information is found by the GPS module. This is needed for the GPS loss when flying
 		l_lat_gps = 0;
@@ -145,48 +146,48 @@ if (new_line_found == 1) {
 		number_used_sats = 0;
 	}
 	// If the line starts with GA and if there is a GPS fix we can scan the line for the latitude, longitude and number of satellites
-	if (incomming_message[4] == 'G' && incomming_message[5] == 'A' && (incomming_message[44] == '1' || incomming_message[44] == '2')) {
+	if (incoming_message[4] == 'G' && incoming_message[5] == 'A' && (incoming_message[44] == '1' || incoming_message[44] == '2')) {
 		// Filter the minutes for the GGA line multiplied by 10
-		lat_gps_actual = ((int)incomming_message[19] - 48) * (long)10000000;
-		lat_gps_actual += ((int)incomming_message[20] - 48) * (long)1000000;
-		lat_gps_actual += ((int)incomming_message[22] - 48) * (long)100000;
-		lat_gps_actual += ((int)incomming_message[23] - 48) * (long)10000;
-		lat_gps_actual += ((int)incomming_message[24] - 48) * (long)1000;
-		lat_gps_actual += ((int)incomming_message[25] - 48) * (long)100;
-		lat_gps_actual += ((int)incomming_message[26] - 48) * (long)10;
+		lat_gps_actual = ((int)incoming_message[19] - 48) * (long)10000000;
+		lat_gps_actual += ((int)incoming_message[20] - 48) * (long)1000000;
+		lat_gps_actual += ((int)incoming_message[22] - 48) * (long)100000;
+		lat_gps_actual += ((int)incoming_message[23] - 48) * (long)10000;
+		lat_gps_actual += ((int)incoming_message[24] - 48) * (long)1000;
+		lat_gps_actual += ((int)incoming_message[25] - 48) * (long)100;
+		lat_gps_actual += ((int)incoming_message[26] - 48) * (long)10;
 		// To convert minutes to degrees we need to divide minutes by 6
 		lat_gps_actual /= (long)6;
 		// Add multiply degrees by 10
-		lat_gps_actual += ((int)incomming_message[17] - 48) * (long)100000000;
-		lat_gps_actual += ((int)incomming_message[18] - 48) * (long)10000000;
+		lat_gps_actual += ((int)incoming_message[17] - 48) * (long)100000000;
+		lat_gps_actual += ((int)incoming_message[18] - 48) * (long)10000000;
 		// Divide everything by 10
 		lat_gps_actual /= 10;
 
 		// Filter minutes for the GGA line multiplied by 10
-		lon_gps_actual = ((int)incomming_message[33] - 48) * (long)10000000; 
-		lon_gps_actual += ((int)incomming_message[34] - 48) * (long)1000000;
-		lon_gps_actual += ((int)incomming_message[36] - 48) * (long)100000;
-		lon_gps_actual += ((int)incomming_message[37] - 48) * (long)10000;
-		lon_gps_actual += ((int)incomming_message[38] - 48) * (long)1000;
-		lon_gps_actual += ((int)incomming_message[39] - 48) * (long)100;
-		lon_gps_actual += ((int)incomming_message[40] - 48) * (long)10;
+		lon_gps_actual = ((int)incoming_message[33] - 48) * (long)10000000; 
+		lon_gps_actual += ((int)incoming_message[34] - 48) * (long)1000000;
+		lon_gps_actual += ((int)incoming_message[36] - 48) * (long)100000;
+		lon_gps_actual += ((int)incoming_message[37] - 48) * (long)10000;
+		lon_gps_actual += ((int)incoming_message[38] - 48) * (long)1000;
+		lon_gps_actual += ((int)incoming_message[39] - 48) * (long)100;
+		lon_gps_actual += ((int)incoming_message[40] - 48) * (long)10;
 		// To convert minutes to degrees we need to divide minutes by 6
 		lon_gps_actual /= (long)6;
 		// Add multiply degrees by 10
-		lon_gps_actual += ((int)incomming_message[30] - 48) * (long)1000000000;
-		lon_gps_actual += ((int)incomming_message[31] - 48) * (long)100000000;
-		lon_gps_actual += ((int)incomming_message[32] - 48) * (long)10000000;
+		lon_gps_actual += ((int)incoming_message[30] - 48) * (long)1000000000;
+		lon_gps_actual += ((int)incoming_message[31] - 48) * (long)100000000;
+		lon_gps_actual += ((int)incoming_message[32] - 48) * (long)10000000;
 		// Divide everything by 10
 		lon_gps_actual /= 10;
 
-		if (incomming_message[28] == 'N')
+		if (incoming_message[28] == 'N')
 			// When flying north of the equator the latitude_north variable will be set to 1
 			latitude_north = 1;
 		else
 			// When flying south of the equator the latitude_north variable will be set to 0
 			latitude_north = 0;
 
-		if (incomming_message[42] == 'E')
+		if (incoming_message[42] == 'E')
 			// When flying east of the prime meridian the longiude_east variable will be set to 1
 			longiude_east = 1;
 		else
@@ -194,8 +195,8 @@ if (new_line_found == 1) {
 			longiude_east = 0;
 			
 		// Filter the number of satillites from the GGA line
-		number_used_sats = ((int)incomming_message[46] - 48) * (long)10;
-		number_used_sats += (int)incomming_message[47] - 48;
+		number_used_sats = ((int)incoming_message[46] - 48) * (long)10;
+		number_used_sats += (int)incoming_message[47] - 48;
 
 		if (lat_gps_previous == 0 && lon_gps_previous == 0) {
 			// If this is the first time the GPS code is used
@@ -222,8 +223,8 @@ if (new_line_found == 1) {
 	}
 
 	// If the line starts with SA and if there is a GPS fix we can scan the line for the fix type (none, 2D or 3D)
-	if (incomming_message[4] == 'S' && incomming_message[5] == 'A')
-		fix_type = (int)incomming_message[9] - 48;
+	if (incoming_message[4] == 'S' && incoming_message[5] == 'A')
+		fix_type = (int)incoming_message[9] - 48;
 
 }
 ```
@@ -324,7 +325,7 @@ if (waypoint_set == 1) {
 	gps_roll_adjust = ((float)gps_roll_adjust_north * cos(angle_yaw * 0.017453)) + ((float)gps_pitch_adjust_north * cos((angle_yaw - 90) * 0.017453));
 	gps_pitch_adjust = ((float)gps_pitch_adjust_north * cos(angle_yaw * 0.017453)) + ((float)gps_roll_adjust_north * cos((angle_yaw + 90) * 0.017453));
 
-	//Limit the maximum correction to 300. This way we still have the full controll of the drone with the pitch and roll sticks on the transmitter.
+	//Limit the maximum correction to 300. This way we still have the full control of the drone with the pitch and roll sticks on the transmitter.
 	if (gps_roll_adjust > 300) gps_roll_adjust = 300;
 	if (gps_roll_adjust < -300) gps_roll_adjust = -300;
 	if (gps_pitch_adjust > 300) gps_pitch_adjust = 300;
@@ -341,7 +342,7 @@ And only after 3 months, we thought of a simple soulution: to change the values 
 Prior to this, all testing of the algorithm was carried out using the PX4 firmware toolkit and the Gazebo drone motion simulator. As a result, many formalities were overcome in terms of communicating with the simulator and increasing performance (click on the picture to see the video).
 
 The result of the GPS prediction (clickable):
-[![Watch the video](../assets/amls/youtube_gazebo.jpg)](https://youtu.be/Rg-Y_fl4BKQ)
+<iframe width="560" height="315" src="https://youtu.be/Rg-Y_fl4BKQ" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
 
 The end result reached a point when the error of the predicted postition varies from 0 to 70 centimeters.
 
@@ -388,7 +389,7 @@ The platform, as well as the Liberty-Link, will have MS5611 barometers.
 According to the documentation, the height resolution is 10 cm. The algorithm will take the pressure values and by passing it through the PID-controller will stabilize the drone's altitude by changing the Throttle (3rd channel).
 
 Altitude hold test (clickable):
-[![Watch the video](../assets/amls/youtube_pressure_holding.jpg)](https://youtu.be/xmvcGeZzEfc)
+<iframe width="560" height="315" src="https://youtu.be/xmvcGeZzEfc" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
 
 During the flight along the waypoint, the setpoint of the pressure will decrease in order to increase the altitude (it is safer to fly in a straight line at a high altitude, so the drone would not crash into anything). And during GPS stabilization (when the drone is already close to the platform), the drone will be set with a setpoint of pressure that correlates with ~ 1.5-2m height above the platform.
 
@@ -406,7 +407,7 @@ And as we couldn't predict the possibility of accomplishing our task, first of a
 Our first idea was to attach Raspberry Pi with Liberty_X as it was embodied in COEX Clover and to let Raspberry Pi handle all of the maths.
 
 First optical stabilization prototype test (Сlickable):
-[![Watch the video](../assets/amls/youtube_first_tests.jpg)](https://youtu.be/TrrxXOHAqbQ)
+<iframe width="560" height="315" src="https://youtu.be/TrrxXOHAqbQ" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
 
 But few tests showed that Raspberry Pi computing power is not enough for amount of data needed to stabilize the drone. Furthermore, the idea of installing a Raspberry Pi on each drone is irrational for its own.
 
@@ -419,12 +420,12 @@ Then we came up with the idea of separating drone and stabilization system so th
 This was how we ended up with our current optical stabilization algorithm - the camera which is connected to a powerful machine and the machine is attached to the platform. The drone only has 4x4 ArUco tag and its controller.
 
 (clickable)
-[![Watch the video](../assets/amls/youtube_stabilization_1.jpg)](https://youtu.be/A2oq6zCebVo)
+<iframe width="560" height="315" src="https://youtu.be/A2oq6zCebVo" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
 
 Then, we came up with using Pose Estimation algorithms from OpenCV library. The first tests showed us that we are on the right track!
 
 Pose Estimation Pyhton (Clickable):
-[![Watch the video](../assets/amls/youtube_stabilization_2.jpg)](https://www.youtube.com/watch?v=kE3UmJZ00so)
+<iframe width="560" height="315" src="https://www.youtube.com/watch?v=kE3UmJZ00so" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
 
 But, the algorithms were far from perfect. For example, since the code was written in Python (https://github.com/XxOinvizioNxX/Liberty-X_Point), the performance was not satisfyingly, and there was no suitable threading control either. Therefore, we had to change something.
 
@@ -433,7 +434,7 @@ But, the algorithms were far from perfect. For example, since the code was writt
 Having weighed all the pros and cons, it was decided to rewrite all optical stabilization using Java. This is how the first version of Liberty-Way appeared. This time, it was decided to approach the OOP thoroughly, and, after a little tweaking, an excellent stabilization and landing algorithm was obtained.
 
 Landing test on Liberty-Way v.beta_0.0.1 (clickable):
-[![Watch the video](../assets/amls/youtube_landing_test.jpg)](https://youtu.be/8VAobWPFG8g))
+<iframe width="560" height="315" src="https://youtu.be/8VAobWPFG8g" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
 
 ### 5.5. Liberty-Way
 
@@ -442,18 +443,15 @@ Then many improvements and bug fixes followed. As a result, Liberty-Way is a cro
 Full description, including all settings, startup, etc. you can find in our GitHub repository: https://github.com/XxOinvizioNxX/Liberty-Way
 
 Video of static stabilization (clickable):
-
-[![Watch the video](../assets/amls/youtube_static_stabilization.jpg)](https://www.youtube.com/watch?v=adR38R27MEU&ab_channel=AMLSMosPolytech)
+<iframe width="560" height="315" src="https://www.youtube.com/watch?v=adR38R27MEU&ab_channel=AMLSMosPolytech" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
 
 Liberty-Way can even stabilize a "thrown" drone (clickable):
-
-[![Watch the video](../assets/amls/youtube_optical_catch.jpg)](https://www.youtube.com/watch?v=gAaGQSC-r2g&ab_channel=AMLSMosPolytech)
+<iframe width="560" height="315" src="https://www.youtube.com/watch?v=gAaGQSC-r2g&ab_channel=AMLSMosPolytech" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
 
 There is a small bug in the video with the rotation angle, in the new release it has been fixed!
 
 And, of course, example of how it works in motion (tested with beta_0.0.3 release) (clickable):
-
-[![Watch the video](../assets/amls/youtube_holding_in_motion.jpg)](https://www.youtube.com/watch?v=8vB-8QIBoJU&ab_channel=AMLSMosPolytech)
+<iframe width="560" height="315" src="https://www.youtube.com/watch?v=8vB-8QIBoJU&ab_channel=AMLSMosPolytech" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
 
 All basic settings are conveniently placed in separate JSON files (settings, PID), which allows a user to quickly change the required parameters without rebuilding the application. In fact, to run the application, you just need to download the latest release, unpack the archive and run it through the launcher corresponding to the preferable OS.
 
@@ -593,7 +591,7 @@ In order to land on a quickly moving platform, it is very useful to know its spe
 ![MPU6050](../assets/amls/mpu6050_gyro.png "MPU6050")
 
 Speedometer test (inside the gray circle, lower right parameter (SPD) - speed in km / h) (Clickable):
-[![Watch the video](../assets/amls/youtube_speedometer_test.jpg)](https://youtu.be/yvCo6tYjdM0)
+<iframe width="560" height="315" src="https://youtu.be/yvCo6tYjdM0" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
 
 To calculate the speed, the acceleration is taken for short time periods, then multiplied with time, which results with the instantaneous speed. Then this speed is constantly added to the previous value:
 
@@ -643,10 +641,10 @@ In the current version of the prototype, 6 LEDs are used as a light sensor and a
 ![Light sensors](../assets/amls/light_sensors.png "Light sensors")
 
 Test for determining the level of illumination using LEDs (clickable):
-[![Watch the video](../assets/amls/youtube_light_sensor.jpg)](https://www.youtube.com/watch?v=xQeiA945aRA&ab_channel=AMLSMosPolytech)
+<iframe width="560" height="315" src="https://www.youtube.com/watch?v=xQeiA945aRA&ab_channel=AMLSMosPolytech" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
 
 Exposure adjustment and adding additional illumination tests (clickable):
-[![Watch the video](../assets/amls/youtube_exposure_test.jpg)](https://youtu.be/iMORim6zxsg)
+<iframe width="560" height="315" src="https://youtu.be/iMORim6zxsg" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
 
 -----------
 
